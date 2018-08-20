@@ -1,0 +1,24 @@
+Features:
+1. When user types, prompt most popular auto complete suggestions of K (between 2-5). User can choose one to use
+2. User's typing and choice of autocomplete will be collected to build the system
+3. They system can be built personal meaning that user's own data can be used to rank the autocomplete options
+4. Other factors can also kick in such as location, event, which basically affect the ranking
+5. For basic system, let's skip personalization and other policies
+
+General System:
+Front end: web/mobile text input
+Service: servers serving requests and provide autocomplete words 
+          List<String> GetAutoComplete(string)
+          in RESTful: https://mysystem.com/getAutoComplete/v1/inputString?=
+          These servers also take user's input and build trie for db
+DB:     Two types needed: 
+
+        Result DB: (K, V) K=typed string; V=List<Strings> for suggestions; 
+        to serve query: servers send key and DB provides K hot words
+        
+        Compute DB: store trie so servers can update count of words and put result to result DB
+        to update with collected data: servers update counter of each type word, Compute DB update trie and send changes of hot words to Result DB.
+        
+Performance and Scalability
+        
+
