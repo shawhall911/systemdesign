@@ -20,5 +20,10 @@ DB:     Two types needed:
         to update with collected data: servers update counter of each type word, Compute DB update trie and send changes of hot words to Result DB.
         
 Performance and Scalability
-        
+        Say DAU = 100M; on average every types 10 chars.
+        So 1B a day queries. 1B/86400 = 12K QPS on 1.2K connections per seconds; 
+        Daytime usage mainly. So 3-5 fronting servers. 
+        For DB, 12K QPS hitting DB (without considering caching yet), thus need 10-20 DBs (K-V) nosql
+        Storage for Result DB (English alphabet only): (26*K)+(26*26)*K...=K(26+26*26+26*26*26...)=K(26-26^11)/(-25)=150,000B bytes = 133T this is worst case. Assuming english words has half of those, 60T disks needed
+        Storage for compute DB: 
 
