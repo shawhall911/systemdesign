@@ -42,18 +42,29 @@ Data Collection and Computing Result
         ArrayList <String> hotwords;
         }
         
-        void TraverseTrie(TrieNode r, String typed){
-          if(r == null) return;
-          if(r.leaf == true){
-                   
+        boolean TraverseTrie(TrieNode r, String typed, int index){
+          if(r.leaf == true && index == (typed.length() - 1) ){
+              UpdateHotWordsAlongthePath();
+              return true;
           }
+          else if(r.leaf == true) return false; //hit leaf, but still more chars
+          char c = typed.charAt(index);
+          if(r.map.contains(c))
+             TraverseTrie(r.map.get(c), typed, index+1);
+          else
+             return false;
         }
         
         Every 12/24 hours, traverse the trie, and update the result DB
         
-        Schema of Result DB:
-        String word
+Schema of Result DB:
+        String word: PK
         JSON {hotword1, hotword2, ..}
         Timestamp time
-        
-        
+          
+          Use hash of the word (PK) as partition key: 
+                    pro: load evenly distributed to partitions. when more DB server are needed, only those need to be moved to the new server are moved. 
+                    con: "the" "she" will be generating hot spots on some partitions. no range based query but not needed in this case.
+          Use range based sharding: A-G: partition 1; H-N: partition 2...
+                    pro: easy to manage, direct mapping
+                    con: when more db servers are needed, lots of data need to be shifted
